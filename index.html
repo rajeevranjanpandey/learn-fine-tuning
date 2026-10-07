@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -40,13 +40,6 @@
   --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --r:10px; --shadow:0 1px 2px rgba(20,30,45,.06),0 6px 20px rgba(20,30,45,.06);
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0f141b; --grid:#16202b; --paper:#151c25; --ink:#e6ecf2; --ink2:#a6b3c2; --line:#2c3846; --soft:#1c2531;
-  --accent:#7fb0e0; --accent-ink:#9cc3ea; --focus:#fb923c;
-  --c-data:#9aa4b2; --c-frozen:#60a5fa; --c-train:#4ade80; --c-lr:#fb923c; --c-opt:#a78bfa; --c-loss:#facc15;
-  --c-grad:#f87171; --c-act:#2dd4bf; --c-out:#93a8ff; --c-mask:#000000;
-  --t-frozen:#93c5fd; --t-train:#86efac; --t-lr:#fdba74; --t-opt:#c4b5fd; --t-loss:#fde047; --t-grad:#fca5a5; --t-act:#5eead4; --t-out:#b4c3ff; --t-data:#b6bfcb;
-  --ok:#4ade80; --bad:#f87171; --on-frozen:#0b1220; --on-grad:#1b0606; --on-opt:#150b2b; --on-out:#0b1230; --on-mask:#fff; --on-data:#0b1220; --on-train:#0b1220; --on-act:#0b1220; --on-loss:#0b1220; --on-lr:#0b1220; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f141b; --grid:#16202b; --paper:#151c25; --ink:#e6ecf2; --ink2:#a6b3c2; --line:#2c3846; --soft:#1c2531;
   --accent:#7fb0e0; --accent-ink:#9cc3ea; --focus:#fb923c;
@@ -855,8 +848,8 @@ function setLevel(v) {
   $$('details.math-box').forEach(d => d.open = v === 'expert');
   $$('.level-sel').forEach(s => s.value = v); store.set('level2', v);
 }
-function setTheme(t) { if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; store.set('theme', t || ''); $$('.theme-btn').forEach(b => b.textContent = (document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark' ? '☀ Light' : '☾ Dark'); }
-function toggleTheme() { const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); setTheme(cur === 'dark' ? 'light' : 'dark'); }
+function setTheme(t) { const th = t === 'dark' ? 'dark' : 'light'; document.documentElement.dataset.theme = th; store.set('theme', th); $$('.theme-btn').forEach(b => b.textContent = th === 'dark' ? '☀ Light' : '☾ Dark'); }
+function toggleTheme() { const cur = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'; setTheme(cur === 'dark' ? 'light' : 'dark'); }
 function setSize(real) { document.body.classList.toggle('sz-real', real); $$('.size-btn').forEach(b => { b.setAttribute('aria-pressed', real); b.textContent = real ? 'Sizes: real models' : 'Sizes: tiny example'; }); }
 
 /* ===== Hero and Part one (chapters A to G) ===== */
@@ -2884,7 +2877,7 @@ function build() {
   $('#drawer-btn').onclick = openRail;
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { $$('.rail a.here').forEach(a => a.classList.remove('here')); const a = $(`.rail a[href="#${e.target.id}"]`); if (a) a.classList.add('here'); } }), { rootMargin: '-30% 0px -60% 0px' });
   $$('.step,.chap').forEach(s => io.observe(s));
-  setTheme(store.get('theme', '') || null);
+  setTheme(store.get('theme', 'light'));
   setLevel(store.get('level2', 'beginner'));
   setSize(false);
   refreshProgress();
